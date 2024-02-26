@@ -310,7 +310,7 @@ onMounted(() => {
           <el-option :value="30" label="30人">30人</el-option>
           <el-option :value="45" label="45人">45人</el-option>
         </el-select>
-        <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full w-full py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-white">開始抽獎</div>
+        <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-white">開始抽獎</div>
         <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div>
         <div class="reset cursor-pointer" @click="reset">重置得獎者</div>
        </div>
