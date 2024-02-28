@@ -213,9 +213,9 @@ function maskTWID(twid) {
 }
 function maskName(name) {
   if (name.length <= 2) {
-    return name[0] + '*'.repeat(name.length - 1);
+    return name[0] + '*';
   } else {
-    return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
+    return name[0] + '*' + name[name.length - 1];
   }
 }
 
@@ -307,10 +307,6 @@ onMounted(() => {
       <div class="w-[40vw] flex justify-between gap-10 flex-col items-center">
         <img :src="prologo" class="w-[300px]"/>
        <div class="flex items-center flex-col gap-4">
-        <el-select v-model="size" style="width: 100px; border-radius: 400px; overflow: hidden; font-size: 20px;">
-          <el-option :value="30" label="30人">30人</el-option>
-          <el-option :value="45" label="45人">45人</el-option>
-        </el-select>
         <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-white">開始抽獎</div>
         <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div>
         <div class="reset cursor-pointer" @click="reset">重置得獎者</div>

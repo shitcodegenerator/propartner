@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useRoute } from 'vue-router';
 
 const event = ref(1)
+const raw = ref(false)
 
 
 const winners = ref([])
@@ -27,14 +28,13 @@ function maskTWID(twid) {
   return twid.replace(/(?<=^[A-Z]\d{3})\d{3}(?=\d{3}$)/, '***');
 }
 function maskName(name) {
+  console.log(name, name.length)
   if (name.length <= 2) {
-    return name[0] + '*'.repeat(name.length - 1);
+    return name[0] + '*';
   } else {
-    return name[0] + '*'.repeat(name.length - 2) + name[name.length - 1];
+    return name[0] + '*' + name[name.length - 1];
   }
 }
-
-
 
 const route = useRoute()
 
@@ -42,6 +42,7 @@ const route = useRoute()
 onMounted(() => {
   if(route.query.event) {
     event.value = +route.query.event
+    raw.value = !!route.query.raw
     getWinners()
   }
 })
@@ -50,12 +51,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg min-h-screen  w-screen pt-[10vh] px-4">
-    <h1 class="font-bold mb-4 text-3xl underline text-black">第 {{ event }} 場次得獎名單</h1>
+  <div class="bg min-h-screen  w-screen py-[10vh] px-4">
+    <h1 class="font-bold mb-4 text-3xl underline text-black">第 {{ event === 1 ? '台中' : event === 2 ? '高雄' : '林口' }} 場次得獎名單</h1>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="i in winners" class="flex flex-col text-black">
-        <span class="font-bold text-xl">{{ maskName(i.name) }}</span>
-        <span>{{ maskTWID(i.userId) }}</span>
+        <span class="font-bold text-xl">{{raw ? i.name :  maskName(i.name) }}</span>
+        <span>{{ raw ? i.userId : maskTWID(i.userId) }}</span>
     </div>
     </div>
   </div>
