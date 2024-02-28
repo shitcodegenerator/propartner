@@ -2,10 +2,11 @@
 import { ref, onMounted, computed} from 'vue';
 import prologo from '../assets/prologo.png'
 import title from '../assets/title.png'
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElLoading } from 'element-plus';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import QRCodeVue3 from "qrcode-vue3";
+
 
 const event = ref(1)
 const winners = ref(
@@ -176,6 +177,12 @@ const reset = () => {
 }
 
 const lottery = async () => {
+  const loading = ElLoading.service({
+      lock: true,
+      text: '抽獎中',
+      customClass: 'spinner',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
   try {
     visibleWinners.value = []
     isFinished.value = false
@@ -185,8 +192,12 @@ const lottery = async () => {
     step.value++
     showWinners()
     ElMessage.success('開始抽獎')
+    loading.close()
   } catch(err) {
     ElMessage.error(err?.response?.data?.message ??'抽獎失敗')
+    
+  } finally {
+    loading.close()
   }
 }
 
@@ -195,7 +206,6 @@ function showWinners() {
   let index = 0;
   const intervalId = setInterval(() => {
     if (index < winners.value.length) {
-      console.log(winners[index])
       visibleWinners.value.push(winners.value[index]);
       index++;
     } else {
@@ -255,8 +265,10 @@ const href = computed(() => {
 
 const size = ref(30)
 
+
 onMounted(() => {
   addKeyDown()
+  ElLoading.install
   console.log(route.query)
   if(route.query.event) {
     event.value = +route.query.event
@@ -324,4 +336,6 @@ onMounted(() => {
   background-size: cover;
   background-position: center;
 }
+
+
 </style>

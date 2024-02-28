@@ -12,3 +12,25 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spinner .el-loading-spinner {
+  top: unset !important;
+}
+.spinner .el-loading-spinner .circular {
+  width: 200px !important;
+  height: 200px !important;
+}
+.spinner .el-loading-spinner .circular .path {
+  stroke: gold !important;
+}
+
+.el-loading-text {
+  font-size: 48px !important;
+  color: gold !important;
+}
