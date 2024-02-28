@@ -8,11 +8,13 @@ import 'element-plus/dist/index.css'
 import EnterData from './views/EnterData.vue'
 import Home from './views/Home.vue'
 import Winners from './views/Winners.vue'
+import Settings from './views/Settings.vue'
 
 const routes = [
   { path: '/', component: Home },
   { path: '/enterdata', component: EnterData },
-  { path: '/winners', component: Winners }
+  { path: '/winners', component: Winners },
+  { path: '/settings', component: Settings }
 ]
 
 // 3. 创建路由实例并传递 `routes` 配置

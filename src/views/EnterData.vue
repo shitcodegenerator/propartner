@@ -2,8 +2,9 @@
     <div class="bg h-screen px-4 pt-[20vh]">
 
 <div class="bg-white shadow rounded-lg border  flex flex-col items-center justify-center py-8 px-4">
-    <h1 class="font-bold text-2xl text-center mb-4 text-blue-700">第 {{ruleForm.event }} 場次參加者基本資料</h1>
+    <h1 v-if="!done" class="font-bold text-2xl text-center mb-4 text-blue-700">{{ ruleForm.event === 1 ? '台中' : ruleForm.event === 2 ? '高雄' : '林口' }}場 參加者基本資料</h1>
     <el-form
+     v-if="!done"
       ref="ruleFormRef"
       :model="ruleForm"
       status-icon
@@ -27,11 +28,16 @@
       </el-form-item>
     </el-form>
 
-    <div class="flex flex-col gap-4 w-full">
+    <div v-if="!done" class="flex flex-col gap-4 w-full">
         <el-button type="primary"  style="margin: 0;height: 48px;" @click="submitForm(ruleFormRef)"
           >送出</el-button
         >
         <el-button style="margin: 0;height: 48px;" @click="resetForm(ruleFormRef)">重置</el-button>
+    </div>
+
+    <div v-else class="text-green-500 flex flex-col items-center justify-center gap-10 font-bold text-4xl">
+      <CircleCheckFilled />
+      <span>報名成功</span>
     </div>
    </div>
     </div>
@@ -41,11 +47,13 @@
   <script lang="ts" setup>
   import { onMounted, reactive, ref } from 'vue'
   import type { FormInstance, FormRules } from 'element-plus'
-  import { ElMessage } from 'element-plus'
+  import { ElMessage, ElIcon } from 'element-plus'
   import axios from 'axios'
+  import { CircleCheckFilled } from '@element-plus/icons-vue'
   import { useRoute } from 'vue-router' 
   
   const ruleFormRef = ref<FormInstance>()
+  const done = ref(false)
   
 
   const ruleForm = reactive({
@@ -67,10 +75,11 @@
         try {
             ruleForm.userId = ruleForm.userId.toUpperCase()
             const { data } = await axios.post('https://propartnerbe.vercel.app/enroll', ruleForm)
-            console.log(data)
             ElMessage.success('參加成功，每位來賓僅能參加一次')
+            done.value = true
         } catch (err) {
             console.log(err)
+            done.value = false
             ElMessage.error(err?.response?.data?.message ?? '參加失敗')
         }
       } 
