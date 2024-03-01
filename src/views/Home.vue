@@ -278,7 +278,6 @@ const fullScreen = () => {
 onMounted(() => {
   addKeyDown()
   fullScreen()
-  ElLoading.install
   console.log(route.query)
   if(route.query.event) {
     event.value = +route.query.event

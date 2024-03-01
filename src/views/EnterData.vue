@@ -50,7 +50,7 @@
   <script lang="ts" setup>
   import { onMounted, reactive, ref } from 'vue'
   import type { FormInstance, FormRules } from 'element-plus'
-  import { ElMessage, ElIcon } from 'element-plus'
+  import { ElMessage, ElIcon, ElLoading } from 'element-plus';
   import axios from 'axios'
   import { CircleCheckFilled } from '@element-plus/icons-vue'
   import { useRoute } from 'vue-router' 
@@ -75,6 +75,11 @@
   
   const submitForm = (formEl: FormInstance | undefined) => {
     if (!formEl) return
+    const loading = ElLoading.service({
+      lock: true,
+      customClass: 'spinner',
+      background: 'rgba(0, 0, 0, 0.7)',
+    })
     formEl.validate(async (valid) => {
       if (valid) {
         try {
@@ -82,10 +87,12 @@
             const { data } = await axios.post('https://propartnerbe.vercel.app/enroll', ruleForm)
             ElMessage.success('參加成功，每位來賓僅能參加一次')
             done.value = true
+            loading.close()
         } catch (err) {
             console.log(err)
             done.value = false
             ElMessage.error(err?.response?.data?.message ?? '參加失敗')
+            loading.close()
         }
       } 
     })
