@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed} from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount} from 'vue';
 import prologo from '../assets/prologo.png'
 import title from '../assets/title.png'
 import { ElMessage, ElLoading } from 'element-plus';
@@ -235,10 +235,8 @@ const step = ref(0)
 
 
 const route = useRoute()
-
-const addKeyDown = () => {
-  window.addEventListener('keydown', function(e){ 
-    if (e.code !== 'Enter') return
+const enterEvent = (e) => {
+  if (e.code !== 'Enter') return
    
     if(step.value === 0) {
       lottery()
@@ -255,8 +253,10 @@ const addKeyDown = () => {
       isFinished.value = false
       return
     }
-    
-   }, false);
+}
+
+const addKeyDown = () => {
+  window.addEventListener('keydown', enterEvent, false);
 }
 
 const href = computed(() => {
@@ -266,25 +266,31 @@ const href = computed(() => {
 
 const size = ref(30)
 
+const spaceEvent = (e) => {
+  if (e.code !== 'Space') return
+    screenfull.request();
+}
+
+const fullScreen = () => {
+  window.addEventListener('keydown', spaceEvent, false);
+}
 
 onMounted(() => {
   addKeyDown()
-  full()
+  fullScreen()
   ElLoading.install
   console.log(route.query)
   if(route.query.event) {
     event.value = +route.query.event
   }
-
-
 })
 
-const full = () => {
-  window.addEventListener('keydown', function(e){ 
-    if (e.code !== 'Space') return
-    screenfull.request();
-   }, false);
-}
+
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', enterEvent)
+  window.removeEventListener('keydown', spaceEvent)
+})
 
 
 </script>
