@@ -1,7 +1,7 @@
 <template>
     <div class="bg h-screen px-4 pt-[20vh]">
 
-<div class="bg-white shadow rounded-lg border  flex flex-col items-center justify-center py-8 px-4">
+<div class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4">
     <h1 class="font-bold text-2xl text-center mb-4 text-blue-700">抽獎人數設置</h1>
     <el-form
       ref="ruleFormRef"
@@ -71,8 +71,5 @@
 
   <style lang="scss" scoped>
 .bg {
-    background-color: #fdfdfd;
-opacity: 1;
-background-image: linear-gradient(to right, #fff7ce, #fff7ce 6px, #fdfdfd 6px, #fdfdfd );
-background-size: 12px 100%;
+    background-color: #dbdbdb;
 }</style>
