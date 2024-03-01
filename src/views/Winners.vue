@@ -47,16 +47,23 @@ onMounted(() => {
   }
 })
 
+const reset = () => {
+  axios.get(`https://propartnerbe.vercel.app/reset?event=${event.value}`)
+}
+
+
 
 </script>
 
 <template>
   <div class="bg min-h-screen  w-screen py-[10vh] px-4">
     <h1 class="font-bold mb-4 text-3xl underline text-black">{{ event === 1 ? '台中' : event === 2 ? '高雄' : '林口' }}場得獎名單</h1>
+    <div v-if="raw" class="reset cursor-pointer" @click="reset">重置得獎者</div>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="i in winners" class="flex flex-col text-black">
         <span class="font-bold text-xl">{{raw ? i.name :  maskName(i.name) }}</span>
         <span>{{ raw ? i.userId : maskTWID(i.userId) }}</span>
+        <span v-if="raw">{{ i.mobile }}</span>
     </div>
     </div>
   </div>

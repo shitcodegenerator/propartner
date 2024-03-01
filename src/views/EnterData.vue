@@ -20,6 +20,9 @@
       <el-form-item label="姓名" prop="name">
         <el-input v-model="ruleForm.name"  autocomplete="off" />
       </el-form-item>
+      <el-form-item label="手機號碼" prop="mobile">
+        <el-input v-model="ruleForm.mobile"  autocomplete="off" />
+      </el-form-item>
       <el-form-item label="身分證字號" prop="userId">
         <el-input
           v-model="ruleForm.userId"
@@ -59,11 +62,13 @@
   const ruleForm = reactive({
     name: '',
     userId: '',
+    mobile: '',
     event: 1
   })
   
   const rules = reactive<FormRules<typeof ruleForm>>({
     name: [{ required: true, message: '請輸入真實姓名以驗證中獎人身份', trigger: 'change' }],
+    mobile: [{ required: true, message: '請輸入電話號碼以驗證中獎人身份', trigger: 'change' }],
     event: [{ required: true}],
     userId: [{ required: true, message: '請輸入身分證字號以驗證中獎人身份', trigger: 'change' }],
   })

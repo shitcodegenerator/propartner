@@ -6,6 +6,7 @@ import { ElMessage, ElLoading } from 'element-plus';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import QRCodeVue3 from "qrcode-vue3";
+import screenfull from 'screenfull';
 
 
 const event = ref(1)
@@ -268,12 +269,22 @@ const size = ref(30)
 
 onMounted(() => {
   addKeyDown()
+  full()
   ElLoading.install
   console.log(route.query)
   if(route.query.event) {
     event.value = +route.query.event
   }
+
+
 })
+
+const full = () => {
+  window.addEventListener('keydown', function(e){ 
+    if (e.code !== 'Space') return
+    screenfull.request();
+   }, false);
+}
 
 
 </script>
@@ -321,7 +332,7 @@ onMounted(() => {
        <div class="flex items-center flex-col gap-4">
         <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-white">開始抽獎</div>
         <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div>
-        <div class="reset cursor-pointer" @click="reset">重置得獎者</div>
+        <!-- <div class="reset cursor-pointer" @click="reset">重置得獎者</div> -->
        </div>
       </div>
     </div>
