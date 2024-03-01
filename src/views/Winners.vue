@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
@@ -39,6 +39,41 @@ function maskName(name) {
 const route = useRoute()
 
 
+const eventName = computed(() => {
+    if(event.value === 1) {
+      return `113年3月9日台中場`
+    }
+
+    if(event.value === 2) {
+      return `113年3月30日高雄場`
+    }
+
+    if(event.value === 3) {
+      return `113年4月13日林口場`
+    }
+  })
+  
+  const note = computed(() => {
+    if(event.value === 1) {
+      return `備註:<br>
+1.若有得獎，請於3月9日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+
+    if(event.value === 2) {
+      return `備註:<br>
+1.若有得獎，請於3月30日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+
+    if(event.value === 3) {
+      return `備註:<br>
+1.若有得獎，請於4月13日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+  })
+
+
 onMounted(() => {
   if(route.query.event) {
     event.value = +route.query.event
@@ -53,9 +88,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="bg min-h-screen  w-screen py-[10vh] px-4">
-    <h1 class="font-bold mb-4 text-3xl underline text-black">{{ event === 1 ? '台中' : event === 2 ? '高雄' : '林口' }}場得獎名單</h1>
-    
+  <div class="bg min-h-screen  w-screen pt-[5vh] pb-[10vh] px-4">
+    <h1 class="font-bold mb-4 text-2xl  text-blue-700">{{ eventName }}<br>
+      葡眾珍鑽經理贈車表揚大會<br>得獎名單</h1>
+      <p class="text-gray-500 bg-white p-4 border border-gray-300 mb-4 rounded" v-html="note"></p>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="i in winners" class="flex flex-col text-black">
         <span class="font-bold text-xl">{{raw ? i.name :  maskName(i.name) }}</span>

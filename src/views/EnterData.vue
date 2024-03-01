@@ -2,7 +2,8 @@
     <div class="bg h-screen px-4 pt-[20vh]">
 
 <div class="bg-white shadow rounded-lg border  flex flex-col items-center justify-center py-8 px-4">
-    <h1 v-if="!done" class="font-bold text-2xl text-center mb-4 text-blue-700">{{ ruleForm.event === 1 ? '台中' : ruleForm.event === 2 ? '高雄' : '林口' }}場 參加者基本資料</h1>
+    <h1 v-if="!done" class="font-bold text-2xl text-center mb-4 text-blue-700">{{ eventName }}<br>
+      葡眾珍鑽經理贈車表揚大會<br>參加者基本資料</h1>
     <el-form
      v-if="!done"
       ref="ruleFormRef"
@@ -36,6 +37,7 @@
           >送出</el-button
         >
         <el-button style="margin: 0;height: 48px;" @click="resetForm(ruleFormRef)">重置</el-button>
+        <p class="text-gray-500" v-html="note"></p>
     </div>
 
     <div v-else class="text-green-500 flex flex-col items-center justify-center gap-10 font-bold text-4xl">
@@ -48,15 +50,49 @@
   </template>
   
   <script lang="ts" setup>
-  import { onMounted, reactive, ref } from 'vue'
+  import { onMounted, reactive, ref, computed } from 'vue';
   import type { FormInstance, FormRules } from 'element-plus'
-  import { ElMessage, ElIcon, ElLoading } from 'element-plus';
+  import { ElMessage, ElLoading } from 'element-plus';
   import axios from 'axios'
   import { CircleCheckFilled } from '@element-plus/icons-vue'
   import { useRoute } from 'vue-router' 
   
   const ruleFormRef = ref<FormInstance>()
   const done = ref(false)
+
+  const eventName = computed(() => {
+    if(ruleForm.event === 1) {
+      return `113年3月9日台中場`
+    }
+
+    if(ruleForm.event === 2) {
+      return `113年3月30日高雄場`
+    }
+
+    if(ruleForm.event === 3) {
+      return `113年4月13日林口場`
+    }
+  })
+  
+  const note = computed(() => {
+    if(ruleForm.event === 1) {
+      return `備註:<br>
+1.若有得獎，請於3月9日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+
+    if(ruleForm.event === 2) {
+      return `備註:<br>
+1.若有得獎，請於3月30日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+
+    if(ruleForm.event === 3) {
+      return `備註:<br>
+1.若有得獎，請於4月13日15:30前攜帶身分證前往服務台領取獎品。<br>
+2.若當天無領取，視同放棄得獎資格。`
+    }
+  })
   
 
   const ruleForm = reactive({
