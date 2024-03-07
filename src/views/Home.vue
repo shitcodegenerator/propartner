@@ -6,6 +6,7 @@ import { ElMessage, ElLoading } from 'element-plus';
 import axios from 'axios';
 import { useRoute } from 'vue-router';
 import QRCodeVue3 from "qrcode-vue3";
+import QrcodeVue from 'qrcode.vue'
 import screenfull from 'screenfull';
 
 
@@ -305,31 +306,7 @@ onBeforeUnmount(() => {
         </div>
         <img v-if="step === 0" :src="title" class="w-[50vw]"/>
         <div class="flex items-center justify-center" v-if="step === 2">
-          <QRCodeVue3
-            :width="580"
-            :height="580"
-            :value="`${href}/#/winners?event=${event}`"
-            :qrOptions="{ typeNumber: 0, mode: 'Byte', errorCorrectionLevel: 'H' }"
-            :imageOptions="{ hideBackgroundDots: true, imageSize: 0.4, margin: 0 }"
-            :dotsOptions="{
-              type: 'dots',
-              color: '#26249a',
-              gradient: {
-                type: 'linear',
-                rotation: 0,
-                colorStops: [
-                  { offset: 0, color: '#26249a' },
-                  { offset: 1, color: '#26249a' },
-                ],
-              },
-            }"
-            :backgroundOptions="{ color: '#ffffff' }"
-            :cornersSquareOptions="{ type: 'dot', color: '#000000' }"
-            :cornersDotOptions="{ type: undefined, color: '#000000' }"
-            fileExt="png"
-            myclass="my-qur"
-            imgclass="img-qr"
-          />
+          <QrcodeVue :value="`${href}/#/winners?event=${event}`" size="600" class="border-8 border-white"/>
       </div>
       </div>
       <div class="w-[40vw] flex justify-between gap-10 flex-col items-center">
