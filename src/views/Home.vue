@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount} from 'vue';
-import prologo from '../assets/prologo.png'
+import prologo from '../assets/prologo.svg'
 import title from '../assets/title.png'
 import { ElMessage, ElLoading } from 'element-plus';
 import axios from 'axios';
@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
       <div class="w-[50vw]">
         <div v-if="step === 1" class="grid grid-cols-5 gap-4">
           <div v-for="i in visibleWinners" class="flex flex-col">
-            <span class="font-bold text-4xl">{{ maskName(i.name) }}</span>
+            <span class="font-bold text-[48px]">{{ maskName(i.name) }}</span>
             <span>{{ maskTWID(i.userId) }}</span>
           </div>
         </div>
@@ -335,7 +335,7 @@ onBeforeUnmount(() => {
       <div class="w-[40vw] flex justify-between gap-10 flex-col items-center">
         <img :src="prologo" class="w-[300px]"/>
        <div class="flex items-center flex-col gap-4">
-        <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-white">開始抽獎</div>
+        <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-black">開始抽獎</div>
         <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div>
         <!-- <div class="reset cursor-pointer" @click="reset">重置得獎者</div> -->
        </div>
