@@ -19,6 +19,9 @@
           <el-option :value="45" label="45人">45人</el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="兌換時間">
+        <el-input v-model="ruleForm.time" />
+      </el-form-item>
     </el-form>
 
     <div class="flex flex-col gap-4 w-full">
@@ -71,6 +74,7 @@
 
   const ruleForm = reactive({
     num: 30,
+    time: '16:00'
   })
   const ruleForm2 = reactive({
     event: 1,
@@ -91,6 +95,7 @@
       if (valid) {
         try {
             const { data } = await axios.post('https://propartnerbe.vercel.app/setNum', ruleForm)
+            await axios.post('https://propartnerbe.vercel.app/setTime', ruleForm)
             console.log(data)
             ElMessage.success('成功')
             loading.close()
@@ -122,6 +127,13 @@
   }
 
 }
+
+onMounted(async() => {
+  const res1 = await axios.get('https://propartnerbe.vercel.app/getNum')
+  ruleForm.num = res1.data.num
+  const res2 = await axios.get('https://propartnerbe.vercel.app/getTime')
+  ruleForm.time = res2.data.time
+})
 
 
   </script>

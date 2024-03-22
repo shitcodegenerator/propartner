@@ -245,16 +245,45 @@ const enterEvent = (e) => {
     }
 
     if(step.value === 1) {
-      step.value ++
-      return
-    }
-
-    if(step.value === 2) {
       step.value = 0
       isFinished.value = false
       return
     }
 }
+
+const keysPressed = {};
+
+// 特定函數，當同時按下空白鍵和 Enter 鍵時觸發
+function triggerFunction() {
+  console.log('空白鍵和 Enter 鍵被同時按下！');
+  if(step.value === 0) {
+      lottery()
+      return
+    }
+
+    if(step.value === 1) {
+      step.value = 0
+      isFinished.value = false
+      return
+    }
+}
+
+// 監聽鍵盤按下事件
+document.addEventListener('keydown', (event) => {
+  // 將按下的鍵設置為 true
+  keysPressed[event.key] = true;
+
+  // 檢查是否同時按下空白鍵（Space）和 Enter 鍵
+  if (keysPressed['s'] && keysPressed['Enter']) {
+    triggerFunction();
+  }
+});
+
+// 監聽鍵盤釋放事件
+document.addEventListener('keyup', (event) => {
+  // 將釋放的鍵設置為 false
+  keysPressed[event.key] = false;
+});
 
 const addKeyDown = () => {
   window.addEventListener('keydown', enterEvent, false);
@@ -276,13 +305,16 @@ const fullScreen = () => {
   window.addEventListener('keydown', spaceEvent, false);
 }
 
-onMounted(() => {
-  addKeyDown()
+const time = ref('')
+onMounted(async() => {
+  // addKeyDown()
   fullScreen()
   console.log(route.query)
   if(route.query.event) {
     event.value = +route.query.event
   }
+  const res2 = await axios.get('https://propartnerbe.vercel.app/getTime')
+  time.value = res2.data.time
 })
 
 
@@ -292,32 +324,49 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', spaceEvent)
 })
 
+const show = ref(false)
+const password = ref('')
+
+
+const login = () => {
+  if(password.value.toLowerCase() === 'prologin') {
+    show.value = true
+  }
+}
 
 </script>
 
 <template>
   <div class="bg h-screen gap-10 flex flex-cols items-center justify-center">
-      <div class="w-[50vw]">
+    <div v-if="!show" class="w-1/2 flex items-center justify-center gap-4 flex-col">
+      <el-input v-model="password" class="w-1/2 h-10" @keyup.enter="login"  type="password" />
+      <el-button class="w-full bg-yellow-500" @click="login">進入抽獎頁面</el-button>
+    </div>
+      <div v-if="show" class="w-[50vw]">
         <div v-if="step === 1" class="grid grid-cols-5 gap-4">
           <div v-for="i in visibleWinners" class="flex flex-col">
-            <span class="font-bold text-[48px]">{{ maskName(i.name) }}</span>
-            <span>{{ maskTWID(i.userId) }}</span>
+            <span class="font-bold text-[48px] leading-[39px]">{{ maskName(i.name) }}</span>
+            <span>{{ i.userId }}</span>
           </div>
         </div>
         <img v-if="step === 0" :src="title" class="w-[50vw]"/>
-        <div class="flex items-center justify-center" v-if="step === 2">
+       
+        <!-- <div class="flex items-center justify-center" v-if="step === 2">
           <QrcodeVue :value="`${href}/#/winners?event=${event}`" size="600" class="border-8 border-white"/>
+      </div> -->
       </div>
-      </div>
-      <div class="w-[40vw] flex justify-between gap-10 flex-col items-center">
+      <div v-if="show" class="w-[40vw] flex justify-between gap-10 flex-col items-center">
         <img :src="prologo" class="w-[300px]"/>
+        <p class="text-4xl leading-loose">請於今日{{time}}前兌換完畢<br>逾期視同放棄得獎資格</p>
        <div class="flex items-center flex-col gap-4">
-        <div v-if="step === 0" @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-black">開始抽獎</div>
-        <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div>
+        <!-- <div @click="lottery" class="w-[360px] cursor-pointer hover:scale-[1.05] hover:shadow-xl rounded-full  py-4 text-4xl font-bold bg-yellow-500 flex items-center justify-center text-black">開始抽獎</div> -->
+        <!-- <div v-if="step === 2" class="font-bold text-5xl leading-loose">請掃描QRCODE<br>查看完整中獎名單</div> -->
         <!-- <div class="reset cursor-pointer" @click="reset">重置得獎者</div> -->
        </div>
       </div>
     </div>
+
+
 
     
 </template>
