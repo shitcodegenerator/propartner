@@ -2,15 +2,15 @@
     <div class="bg h-screen px-4 pt-[20vh]">
 
 <div class="bg-white shadow rounded-lg border  flex flex-col items-center justify-center py-8 px-4">
-    <h1 v-if="!done" class="font-bold text-2xl text-center mb-4 text-blue-700">{{ eventName }}<br>
-      葡眾珍鑽經理贈車表揚大會<br>參加者基本資料</h1>
+    <h1 v-if="!done" class="font-bold text-xl text-center mb-4 text-blue-700">{{ eventName }}<br>
+      葡眾珍鑽經理贈車表揚大會<br>參加者基本資料（僅限個人參與）</h1>
     <el-form
      v-if="!done"
       ref="ruleFormRef"
       :model="ruleForm"
       status-icon
       :rules="rules"
-      label-width="120px"
+      label-width="140px"
       label-position="left"
       
       class="demo-ruleForm"
@@ -24,7 +24,7 @@
       <el-form-item label="手機號碼" prop="mobile">
         <el-input v-model="ruleForm.mobile"  autocomplete="off" />
       </el-form-item>
-      <el-form-item label="身分證字號" prop="userId">
+      <el-form-item label="身分證字號末三碼" prop="userId">
         <el-input
           v-model="ruleForm.userId"
           autocomplete="off"
@@ -100,10 +100,18 @@
   })
   
   const rules = reactive<FormRules<typeof ruleForm>>({
-    name: [{ required: true, message: '請輸入真實姓名以驗證中獎人身份', trigger: 'change' }],
-    mobile: [{ required: true, message: '請輸入電話號碼以驗證中獎人身份', trigger: 'change' }],
+    name: [{ required: true, message: '請輸入姓名以驗證中獎人身份', trigger: 'change' }],
+    mobile: [{ required: true, message: '請輸入電話以驗證中獎人身份', trigger: 'change' }],
     event: [{ required: true}],
-    userId: [{ required: true, message: '請輸入身分證字號以驗證中獎人身份', trigger: 'change' }],
+    userId: [
+      { required: true , message: '請輸入身分證字號末三碼', trigger: 'change'},
+      { validator:(rule,val,callback) => {
+      if(val.length!==3) {
+        return callback(new Error('錯誤'))
+      }
+      return callback()
+    }
+    , message: '請輸入身分證字號末三碼', trigger: 'change' }],
   })
   
   const submitForm = (formEl: FormInstance | undefined) => {
@@ -114,6 +122,9 @@
       background: 'rgba(0, 0, 0, 0.7)',
     })
     formEl.validate(async (valid) => {
+      if(!valid) {
+        loading.close()
+      }
       if (valid) {
         try {
             ruleForm.userId = ruleForm.userId.toUpperCase()

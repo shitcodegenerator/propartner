@@ -345,7 +345,7 @@ const login = () => {
       <div v-if="show" class="w-[50vw]">
         <div v-if="step === 1" class="grid grid-cols-5 gap-4">
           <div v-for="i in visibleWinners" class="flex flex-col">
-            <span class="font-bold text-[48px] leading-[39px]">{{ maskName(i.name) }}</span>
+            <span class="font-bold text-[60px] leading-[42px]">{{ maskName(i.name) }}</span>
             <span>{{ i.userId }}</span>
           </div>
         </div>

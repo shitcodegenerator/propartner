@@ -16,6 +16,8 @@
       <el-form-item label="抽獎人數" prop="num">
         <el-select v-model="ruleForm.num" style="width: 100px; border-radius: 400px; overflow: hidden; font-size: 20px;">
           <el-option :value="30" label="30人">30人</el-option>
+          <el-option :value="35" label="35人">35人</el-option>
+          <el-option :value="40" label="40人">40人</el-option>
           <el-option :value="45" label="45人">45人</el-option>
         </el-select>
       </el-form-item>
