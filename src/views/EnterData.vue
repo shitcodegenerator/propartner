@@ -24,7 +24,7 @@
       <el-form-item label="手機號碼" prop="mobile">
         <el-input v-model="ruleForm.mobile"  autocomplete="off" />
       </el-form-item>
-      <el-form-item label="身分證字號末三碼" prop="userId">
+      <el-form-item label="身分證字號" prop="userId">
         <el-input
           v-model="ruleForm.userId"
           autocomplete="off"
@@ -104,14 +104,7 @@
     mobile: [{ required: true, message: '請輸入電話以驗證中獎人身份', trigger: 'change' }],
     event: [{ required: true}],
     userId: [
-      { required: true , message: '請輸入身分證字號末三碼', trigger: 'change'},
-      { validator:(rule,val,callback) => {
-      if(val.length!==3) {
-        return callback(new Error('錯誤'))
-      }
-      return callback()
-    }
-    , message: '請輸入身分證字號末三碼', trigger: 'change' }],
+      { required: true , message: '請輸入身分證字號', trigger: 'change'},],
   })
   
   const submitForm = (formEl: FormInstance | undefined) => {
