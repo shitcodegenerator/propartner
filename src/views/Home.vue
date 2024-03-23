@@ -218,7 +218,7 @@ function showWinners() {
 
 function maskTWID(twid) {
   if (twid.length !== 10 || !/[A-Z][0-9]{9}/.test(twid)) {
-    return '身分證字號錯誤';
+    return '身分證字號有誤';
   }
   
   return twid.replace(/(?<=^[A-Z]\d{3})\d{3}(?=\d{3}$)/, '***');
@@ -346,7 +346,7 @@ const login = () => {
         <div v-if="step === 1" class="grid grid-cols-5 gap-4">
           <div v-for="i in visibleWinners" class="flex flex-col">
             <span class="font-bold text-[60px] leading-[42px]">{{ maskName(i.name) }}</span>
-            <span>{{ i.userId }}</span>
+            <span>{{ maskTWID(i.userId) }}</span>
           </div>
         </div>
         <img v-if="step === 0" :src="title" class="w-[50vw]"/>
