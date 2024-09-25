@@ -47,6 +47,9 @@
           @click="submitForm(ruleFormRef)"
           >送出</el-button
         >
+        <el-button type="danger" style="margin: 0; height: 48px" @click="open"
+          >清除所有名單</el-button
+        >
       </div>
     </div>
 
@@ -95,9 +98,10 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
 import type { FormInstance, FormRules } from "element-plus";
-import { ElMessage, ElLoading } from "element-plus";
+import { ElMessage, ElLoading, ElMessageBox } from "element-plus";
 import axios from "axios";
 import { useRoute } from "vue-router";
+import type { Action } from "element-plus";
 
 const ruleFormRef = ref<FormInstance>();
 
@@ -112,6 +116,21 @@ const ruleForm2 = reactive({
 const rules = reactive<FormRules<typeof ruleForm>>({
   num: [{ required: true, message: "請選擇人數", trigger: "change" }],
 });
+
+const open = () => {
+  ElMessageBox.alert("是否要清除所有參加人員？", "提示", {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "確定",
+    callback: async (action: Action) => {
+      const res1 = await axios.get("https://propartnerbe.vercel.app/clear");
+      ElMessage({
+        type: "info",
+        message: `已清除`,
+      });
+    },
+  });
+};
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
