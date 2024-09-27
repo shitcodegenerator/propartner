@@ -117,8 +117,8 @@ const rules = reactive<FormRules<typeof ruleForm>>({
   num: [{ required: true, message: "請選擇人數", trigger: "change" }],
 });
 
-const open = () => {
-  ElMessageBox.alert("是否要清除所有參加人員？", "提示", {
+const secondAlert = () => {
+  ElMessageBox.alert("按下確定會立即清除所有參加人員，請務必確認", "提示", {
     // if you want to disable its autofocus
     // autofocus: false,
     confirmButtonText: "確定",
@@ -129,6 +129,15 @@ const open = () => {
         message: `已清除`,
       });
     },
+  });
+};
+
+const open = () => {
+  ElMessageBox.alert("是否要清除所有參加人員？", "提示", {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "確定",
+    callback: secondAlert,
   });
 };
 
