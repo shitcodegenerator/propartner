@@ -90,6 +90,12 @@
         <el-button type="warning" style="margin: 0; height: 48px" @click="reset"
           >重置得獎者</el-button
         >
+        <el-button
+          type="success"
+          style="margin: 0; height: 48px"
+          @click="openFake"
+          >新增假名單資料</el-button
+        >
       </div>
     </div>
   </div>
@@ -132,12 +138,40 @@ const secondAlert = () => {
   });
 };
 
+const activeEvent = ref(1);
+
+const secondAlertFake = () => {
+  ElMessageBox.alert("按下確定會立即新增假名單人員，請務必確認", "提示", {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "確定",
+    callback: async (action: Action) => {
+      const res1 = await axios.get(
+        `https://propartnerbe.vercel.app/fake?event=${ruleForm2.event}`
+      );
+      ElMessage({
+        type: "info",
+        message: `成功新增`,
+      });
+    },
+  });
+};
+
 const open = () => {
   ElMessageBox.alert("是否要清除所有參加人員？", "提示", {
     // if you want to disable its autofocus
     // autofocus: false,
     confirmButtonText: "確定",
     callback: secondAlert,
+  });
+};
+
+const openFake = () => {
+  ElMessageBox.alert("是否要新增假名單資料？", "提示", {
+    // if you want to disable its autofocus
+    // autofocus: false,
+    confirmButtonText: "確定",
+    callback: secondAlertFake,
   });
 };
 
