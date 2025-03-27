@@ -33,6 +33,13 @@
             <el-option :value="35" label="35人">35人</el-option>
             <el-option :value="40" label="40人">40人</el-option>
             <el-option :value="45" label="45人">45人</el-option>
+            <el-option :value="50" label="50人">50人</el-option>
+            <el-option :value="55" label="55人">55人</el-option>
+            <el-option :value="60" label="60人">60人</el-option>
+            <el-option :value="65" label="65人">65人</el-option>
+            <el-option :value="70" label="70人">70人</el-option>
+            <el-option :value="75" label="75人">75人</el-option>
+            <el-option :value="80" label="80人">80人</el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="兌換時間">
