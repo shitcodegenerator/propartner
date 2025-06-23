@@ -40,18 +40,15 @@ const route = useRoute();
 
 const eventName = computed(() => {
   if (event.value === 1) {
-    return `3/8 台中（中興大學）場`;
+    return `8/9 台中 (中興大學) 場`;
   }
 
   if (event.value === 2) {
-    return `3/9 台中（中興大學）場`;
+    return ` 8/30 高雄 (高雄展覽館) 場`;
   }
 
   if (event.value === 3) {
-    return `3/29 高雄（高雄展覽館）場`;
-  }
-  if (event.value === 4) {
-    return `4/12 林口體育館 場`;
+    return `9/27 林口 (林口體育館) 場`;
   }
 });
 

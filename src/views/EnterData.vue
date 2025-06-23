@@ -70,18 +70,15 @@ const done = ref(false);
 
 const eventName = computed(() => {
   if (ruleForm.event === 1) {
-    return `3/8 台中（中興大學）場`;
+    return `8/9 台中 (中興大學) 場`;
   }
 
   if (ruleForm.event === 2) {
-    return `3/9 台中（中興大學）場`;
+    return ` 8/30 高雄 (高雄展覽館) 場`;
   }
 
   if (ruleForm.event === 3) {
-    return `3/29 高雄（高雄展覽館）場`;
-  }
-  if (ruleForm.event === 4) {
-    return `4/12 林口體育館 場`;
+    return `9/27 林口 (林口體育館) 場`;
   }
 });
 

@@ -316,8 +316,10 @@ const show = ref(false);
 const password = ref("");
 
 const login = () => {
-  if (password.value.toLowerCase() === "prologin") {
+  if (password.value.toLowerCase() === "caq6866") {
     show.value = true;
+  } else {
+    ElMessage.error("密碼錯誤");
   }
 };
 </script>
@@ -357,7 +359,7 @@ const login = () => {
       v-if="show"
       class="w-[40vw] flex justify-between gap-10 flex-col items-center"
     >
-      <img :src="prologo" class="w-[300px]" />
+      <img :src="prologo" class="w-[520px]" />
       <p class="text-4xl leading-loose">
         請於今日{{ time }}前兌換完畢<br />逾期視同放棄得獎資格
       </p>
