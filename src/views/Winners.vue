@@ -12,7 +12,7 @@ const winners = ref([]);
 const getWinners = async () => {
   try {
     const { data } = await axios.get(
-      `https://propartnerbe.vercel.app/getWinners?event=${event.value}`
+      `https://propartnerbe.vercel.app/getWinners?event=${event.value}`,
     );
     winners.value = data.winners;
   } catch (err) {
@@ -40,15 +40,15 @@ const route = useRoute();
 
 const eventName = computed(() => {
   if (event.value === 1) {
-    return `8/9 台中 (中興大學) 場`;
+    return `03/14 台中(中興大學)場`;
   }
 
   if (event.value === 2) {
-    return ` 8/30 高雄 (高雄展覽館) 場`;
+    return ` 03/15台中(中興大學)場`;
   }
 
   if (event.value === 3) {
-    return `9/27 林口 (林口體育館) 場`;
+    return ` 04/11林口(林口體育館)場`;
   }
 });
 
@@ -92,7 +92,8 @@ onMounted(() => {
 .bg {
   background-color: #ffffff;
   opacity: 0.8;
-  background-image: linear-gradient(#fcf4c0 1px, transparent 1px),
+  background-image:
+    linear-gradient(#fcf4c0 1px, transparent 1px),
     linear-gradient(to right, #fcf4c0 1px, #ffffff 1px);
   background-size: 20px 20px;
 }

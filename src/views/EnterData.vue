@@ -70,15 +70,15 @@ const done = ref(false);
 
 const eventName = computed(() => {
   if (ruleForm.event === 1) {
-    return `8/9 台中 (中興大學) 場`;
+    return `03/14 台中(中興大學)場`;
   }
 
   if (ruleForm.event === 2) {
-    return ` 8/30 高雄 (高雄展覽館) 場`;
+    return ` 03/15台中(中興大學)場`;
   }
 
   if (ruleForm.event === 3) {
-    return `9/27 林口 (林口體育館) 場`;
+    return ` 04/11林口(林口體育館)場`;
   }
 });
 
@@ -129,7 +129,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
         ruleForm.userId = ruleForm.userId.toUpperCase();
         const { data } = await axios.post(
           "https://propartnerbe.vercel.app/enroll",
-          ruleForm
+          ruleForm,
         );
         ElMessage.success("參加成功，每位來賓僅能參加一次");
         done.value = true;
