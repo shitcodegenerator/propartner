@@ -223,12 +223,14 @@ const handleFileRemove = () => {
 const parseCsv = (text: string) => {
   const lines = text.split(/\r?\n/).filter((line) => line.trim());
 
-  // biolive：不跳過標題列，每行就是一筆代號
+  // biolive：所有非空 cell 都是一筆代號
   if (isBiolive) {
     if (lines.length === 0) return [];
     return lines
-      .map((line) => ({ code: line.split(",")[0]?.trim() || "" }))
-      .filter((m) => m.code);
+      .flatMap((line) => line.split(","))
+      .map((cell) => cell.trim())
+      .filter((cell) => cell)
+      .map((code) => ({ code }));
   }
 
   // propartner：跳過標題列
@@ -332,7 +334,7 @@ const secondAlertFake = () => {
     // autofocus: false,
     confirmButtonText: "確定",
     callback: async (action: Action) => {
-      const res1 = await axios.get(`${API_BASE}/fake?event=${ruleForm2.event}`);
+      const res1 = await axios.get(`${API_BASE}/fake?event=${ruleForm2.event}&type=${MERCHANT_TYPE}`);
       ElMessage({
         type: "info",
         message: `成功新增`,
