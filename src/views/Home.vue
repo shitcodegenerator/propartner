@@ -9,6 +9,8 @@ import QRCodeVue3 from "qrcode-vue3";
 import QrcodeVue from "qrcode.vue";
 import screenfull from "screenfull";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const event = ref(1);
 const winners = ref([
   {
@@ -167,7 +169,7 @@ const visibleWinners = ref([]);
 const isFinished = ref(false);
 
 const reset = () => {
-  axios.get(`https://propartnerbe.vercel.app/reset?event=${event.value}`);
+  axios.get(`${API_BASE}/reset?event=${event.value}`);
 };
 
 const lottery = async () => {
@@ -181,7 +183,7 @@ const lottery = async () => {
     visibleWinners.value = [];
     isFinished.value = false;
     const { data } = await axios.get(
-      `https://propartnerbe.vercel.app/lottery?event=${event.value}&size=${size.value}`
+      `${API_BASE}/lottery?event=${event.value}&size=${size.value}`
     );
     winners.value = data.winners;
     isFinished.value = true;
@@ -303,7 +305,7 @@ onMounted(async () => {
   if (route.query.event) {
     event.value = +route.query.event;
   }
-  const res2 = await axios.get("https://propartnerbe.vercel.app/getTime");
+  const res2 = await axios.get(`${API_BASE}/getTime`);
   time.value = res2.data.time;
 });
 

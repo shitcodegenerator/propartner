@@ -4,6 +4,8 @@ import { ElMessage } from "element-plus";
 import axios from "axios";
 import { useRoute } from "vue-router";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const event = ref(1);
 const raw = ref(false);
 
@@ -12,7 +14,7 @@ const winners = ref([]);
 const getWinners = async () => {
   try {
     const { data } = await axios.get(
-      `https://propartnerbe.vercel.app/getWinners?event=${event.value}`,
+      `${API_BASE}/getWinners?event=${event.value}`,
     );
     winners.value = data.winners;
   } catch (err) {

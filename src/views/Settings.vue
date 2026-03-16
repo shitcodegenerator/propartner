@@ -80,6 +80,49 @@
       <div
         class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
       >
+        <h1 class="font-bold text-2xl text-center mb-4 text-green-700">
+          匯入參加者
+        </h1>
+        <el-form label-width="120px" label-position="left" class="w-full">
+          <el-form-item label="場次">
+            <el-select v-model="importEvent" class="w-[100px]">
+              <el-option :value="1" label="1">1</el-option>
+              <el-option :value="2" label="2">2</el-option>
+              <el-option :value="3" label="3">3</el-option>
+              <el-option :value="4" label="4">4</el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <el-upload
+          ref="uploadRef"
+          :auto-upload="false"
+          :limit="1"
+          accept=".csv"
+          :on-change="handleFileChange"
+          :on-remove="handleFileRemove"
+          class="w-full mb-4"
+        >
+          <template #trigger>
+            <el-button type="primary" plain>選擇 CSV 檔案</el-button>
+          </template>
+          <template #tip>
+            <div class="text-gray-400 text-xs mt-1">
+              格式：姓名,手機號碼,身分證字號（第一行為標題列）
+            </div>
+          </template>
+        </el-upload>
+        <el-button
+          type="success"
+          class="w-full"
+          style="height: 48px"
+          :disabled="!csvFile"
+          @click="handleImport"
+        >匯入</el-button>
+      </div>
+
+      <div
+        class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
+      >
         <h1 class="font-bold text-2xl text-center mb-4 text-red-700">
           重置得獎名單
         </h1>
@@ -131,11 +174,75 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
-import type { FormInstance, FormRules } from "element-plus";
+import type { FormInstance, FormRules, UploadInstance, UploadFile } from "element-plus";
 import { ElMessage, ElLoading, ElMessageBox } from "element-plus";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import type { Action } from "element-plus";
+
+const API_BASE = import.meta.env.VITE_API_BASE;
+
+// === 匯入參加者 ===
+const importEvent = ref(1);
+const csvFile = ref<File | null>(null);
+const uploadRef = ref<UploadInstance>();
+
+const handleFileChange = (file: UploadFile) => {
+  csvFile.value = file.raw ?? null;
+};
+
+const handleFileRemove = () => {
+  csvFile.value = null;
+};
+
+const parseCsv = (text: string) => {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  // 跳過標題列
+  return lines.slice(1).map((line) => {
+    const cols = line.split(",");
+    return {
+      name: (cols[0] || "").trim(),
+      mobile: (cols[1] || "").trim(),
+      userId: (cols[2] || "").trim(),
+    };
+  }).filter((m) => m.name && m.userId);
+};
+
+const handleImport = async () => {
+  if (!csvFile.value) return;
+
+  const loading = ElLoading.service({
+    lock: true,
+    customClass: "spinner",
+    background: "rgba(0, 0, 0, 0.7)",
+  });
+
+  try {
+    const text = await csvFile.value.text();
+    const members = parseCsv(text);
+
+    if (members.length === 0) {
+      ElMessage.error("CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號");
+      loading.close();
+      return;
+    }
+
+    const { data } = await axios.post(`${API_BASE}/import`, {
+      members,
+      event: importEvent.value,
+    });
+
+    ElMessage.success(data.message);
+    csvFile.value = null;
+    uploadRef.value?.clearFiles();
+  } catch (err: any) {
+    ElMessage.error(err?.response?.data?.message ?? "匯入失敗");
+  } finally {
+    loading.close();
+  }
+};
 
 const ruleFormRef = ref<FormInstance>();
 
@@ -168,7 +275,7 @@ const secondAlert = () => {
     // autofocus: false,
     confirmButtonText: "確定",
     callback: async (action: Action) => {
-      const res1 = await axios.get("https://propartnerbe.vercel.app/clear");
+      const res1 = await axios.get(`${API_BASE}/clear`);
       ElMessage({
         type: "info",
         message: `已清除`,
@@ -186,7 +293,7 @@ const secondAlertFake = () => {
     confirmButtonText: "確定",
     callback: async (action: Action) => {
       const res1 = await axios.get(
-        `https://propartnerbe.vercel.app/fake?event=${ruleForm2.event}`
+        `${API_BASE}/fake?event=${ruleForm2.event}`
       );
       ElMessage({
         type: "info",
@@ -225,10 +332,10 @@ const submitForm = (formEl: FormInstance | undefined) => {
     if (valid) {
       try {
         const { data } = await axios.post(
-          "https://propartnerbe.vercel.app/setNum",
+          `${API_BASE}/setNum`,
           ruleForm
         );
-        await axios.post("https://propartnerbe.vercel.app/setTime", ruleForm);
+        await axios.post(`${API_BASE}/setTime`, ruleForm);
         console.log(data);
         ElMessage.success("成功");
         loading.close();
@@ -251,7 +358,7 @@ const reset = async () => {
   });
   try {
     await axios.get(
-      `https://propartnerbe.vercel.app/reset?event=${ruleForm2.event}`
+      `${API_BASE}/reset?event=${ruleForm2.event}`
     );
     ElMessage.success("成功");
     loading.close();
@@ -262,9 +369,9 @@ const reset = async () => {
 };
 
 onMounted(async () => {
-  const res1 = await axios.get("https://propartnerbe.vercel.app/getNum");
+  const res1 = await axios.get(`${API_BASE}/getNum`);
   ruleForm.num = res1.data.num;
-  const res2 = await axios.get("https://propartnerbe.vercel.app/getTime");
+  const res2 = await axios.get(`${API_BASE}/getTime`);
   ruleForm.time = res2.data.time;
 });
 </script>

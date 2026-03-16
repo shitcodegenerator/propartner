@@ -65,6 +65,8 @@ import axios from "axios";
 import { CircleCheckFilled } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 
+const API_BASE = import.meta.env.VITE_API_BASE;
+
 const ruleFormRef = ref<FormInstance>();
 const done = ref(false);
 
@@ -128,7 +130,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
       try {
         ruleForm.userId = ruleForm.userId.toUpperCase();
         const { data } = await axios.post(
-          "https://propartnerbe.vercel.app/enroll",
+          `${API_BASE}/enroll`,
           ruleForm,
         );
         ElMessage.success("參加成功，每位來賓僅能參加一次");
