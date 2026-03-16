@@ -117,7 +117,12 @@
           </template>
           <template #tip>
             <div class="text-gray-400 text-xs mt-1">
-              格式：姓名,手機號碼,身分證字號（第一行為標題列）
+              <template v-if="isBiolive">
+                格式：每行一筆代號（不需標題列）
+              </template>
+              <template v-else>
+                格式：姓名,手機號碼,身分證字號（第一行為標題列）
+              </template>
             </div>
           </template>
         </el-upload>
@@ -217,9 +222,17 @@ const handleFileRemove = () => {
 
 const parseCsv = (text: string) => {
   const lines = text.split(/\r?\n/).filter((line) => line.trim());
-  if (lines.length < 2) return [];
 
-  // 跳過標題列
+  // biolive：不跳過標題列，每行就是一筆代號
+  if (isBiolive) {
+    if (lines.length === 0) return [];
+    return lines
+      .map((line) => ({ code: line.split(",")[0]?.trim() || "" }))
+      .filter((m) => m.code);
+  }
+
+  // propartner：跳過標題列
+  if (lines.length < 2) return [];
   return lines
     .slice(1)
     .map((line) => {
@@ -248,7 +261,9 @@ const handleImport = async () => {
 
     if (members.length === 0) {
       ElMessage.error(
-        "CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號",
+        isBiolive
+          ? "CSV 檔案中沒有有效資料，請確認格式：代號"
+          : "CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號",
       );
       loading.close();
       return;

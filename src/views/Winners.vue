@@ -74,7 +74,7 @@ onMounted(() => {
   <div class="bg min-h-screen w-screen pt-[5vh] pb-[10vh] px-4">
     <h1 class="font-bold mb-4 text-2xl text-blue-700">
       <template v-if="isBiolive">
-        BIOLIVE 百歐來富<br />抽獎活動<br />得獎名單
+        03/22 BIOLIVE 百歐來富<br />抽獎活動<br />得獎名單
       </template>
       <template v-else>
         {{ eventName }}<br />
@@ -87,11 +87,16 @@ onMounted(() => {
     ></p>
     <div class="grid grid-cols-3 gap-4">
       <div v-for="i in winners" class="flex flex-col text-black">
-        <span class="font-bold text-xl">{{
-          raw ? i.name : maskName(i.name)
-        }}</span>
-        <span>{{ raw ? i.userId : maskTWID(i.userId) }}</span>
-        <span v-if="raw">{{ i.mobile }}</span>
+        <template v-if="isBiolive">
+          <span class="font-bold text-xl">{{ i.userId }}</span>
+        </template>
+        <template v-else>
+          <span class="font-bold text-xl">{{
+            raw ? i.name : maskName(i.name)
+          }}</span>
+          <span>{{ raw ? i.userId : maskTWID(i.userId) }}</span>
+          <span v-if="raw">{{ i.mobile }}</span>
+        </template>
       </div>
     </div>
   </div>

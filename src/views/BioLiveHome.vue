@@ -344,14 +344,18 @@ const login = () => {
     </div>
     <div v-if="show" class="w-[50vw]">
       <div v-if="step === 1" class="grid grid-cols-5 gap-4">
-        <div v-for="i in visibleWinners" class="flex flex-col">
+        <div v-for="i in visibleWinners" class="flex flex-col text-white">
           <span class="font-bold text-[48px] leading-[42px]">{{
-            maskName(i.name)
+            i.userId
           }}</span>
-          <span>{{ maskTWID(i.userId) }}</span>
         </div>
       </div>
-      <img v-if="step === 0" :src="title" class="w-[50vw]" />
+      <h1
+        v-if="step === 0"
+        class="text-white text-6xl font-bold drop-shadow-lg text-center leading-relaxed"
+      >
+        03/22 BIOLIVE 百歐來富<br />抽獎活動
+      </h1>
 
       <!-- <div class="flex items-center justify-center" v-if="step === 2">
           <QrcodeVue :value="`${href}/#/winners?event=${event}`" size="600" class="border-8 border-white"/>

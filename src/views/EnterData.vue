@@ -5,7 +5,7 @@
     >
       <h1 v-if="!done" class="font-bold text-xl text-center mb-4 text-blue-700">
         <template v-if="isBiolive">
-          BIOLIVE 百歐來富<br />抽獎活動<br />參加者基本資料（僅限個人參與）
+          03/22 BIOLIVE 百歐來富<br />抽獎活動<br />參加者基本資料（僅限個人參與）
         </template>
         <template v-else>
           {{ eventName }}<br />
@@ -25,15 +25,22 @@
         <!-- <el-form-item label="場次" prop="event">
         <el-input disabled v-model="ruleForm.event"  autocomplete="off" />
       </el-form-item> -->
-        <el-form-item label="姓名" prop="name">
-          <el-input v-model="ruleForm.name" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="手機號碼" prop="mobile">
-          <el-input v-model="ruleForm.mobile" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="身分證字號" prop="userId">
-          <el-input v-model="ruleForm.userId" autocomplete="off" />
-        </el-form-item>
+        <template v-if="isBiolive">
+          <el-form-item label="代號" prop="userId">
+            <el-input v-model="ruleForm.userId" autocomplete="off" />
+          </el-form-item>
+        </template>
+        <template v-else>
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="ruleForm.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="手機號碼" prop="mobile">
+            <el-input v-model="ruleForm.mobile" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="身分證字號" prop="userId">
+            <el-input v-model="ruleForm.userId" autocomplete="off" />
+          </el-form-item>
+        </template>
       </el-form>
 
       <div v-if="!done" class="flex flex-col gap-4 w-full">
@@ -103,24 +110,32 @@ const ruleForm = reactive({
   event: 1,
 });
 
-const rules = reactive<FormRules<typeof ruleForm>>({
-  name: [
-    {
-      required: true,
-      message: "請輸入姓名以驗證中獎人身份",
-      trigger: "change",
-    },
-  ],
-  mobile: [
-    {
-      required: true,
-      message: "請輸入電話以驗證中獎人身份",
-      trigger: "change",
-    },
-  ],
-  event: [{ required: true }],
-  userId: [{ required: true, message: "請輸入身分證字號", trigger: "change" }],
-});
+const rules = reactive<FormRules<typeof ruleForm>>(
+  isBiolive
+    ? {
+        userId: [{ required: true, message: "請輸入代號", trigger: "change" }],
+      }
+    : {
+        name: [
+          {
+            required: true,
+            message: "請輸入姓名以驗證中獎人身份",
+            trigger: "change",
+          },
+        ],
+        mobile: [
+          {
+            required: true,
+            message: "請輸入電話以驗證中獎人身份",
+            trigger: "change",
+          },
+        ],
+        event: [{ required: true }],
+        userId: [
+          { required: true, message: "請輸入身分證字號", trigger: "change" },
+        ],
+      },
+);
 
 const submitForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
