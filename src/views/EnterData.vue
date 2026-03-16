@@ -4,8 +4,13 @@
       class="bg-white shadow rounded-lg border flex flex-col items-center justify-center py-8 px-4"
     >
       <h1 v-if="!done" class="font-bold text-xl text-center mb-4 text-blue-700">
-        {{ eventName }}<br />
-        葡眾珍鑽經理贈車表揚大會<br />參加者基本資料（僅限個人參與）
+        <template v-if="isBiolive">
+          BIOLIVE 百歐來富<br />抽獎活動<br />參加者基本資料（僅限個人參與）
+        </template>
+        <template v-else>
+          {{ eventName }}<br />
+          葡眾珍鑽經理贈車表揚大會<br />參加者基本資料（僅限個人參與）
+        </template>
       </h1>
       <el-form
         v-if="!done"
@@ -66,6 +71,8 @@ import { CircleCheckFilled } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const MERCHANT_TYPE = import.meta.env.VITE_MERCHANT_TYPE || "propartner";
+const isBiolive = MERCHANT_TYPE === "biolive";
 
 const ruleFormRef = ref<FormInstance>();
 const done = ref(false);

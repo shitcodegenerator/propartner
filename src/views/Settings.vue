@@ -1,5 +1,5 @@
 <template>
-  <div class="bg h-screen px-4 pt-[20vh] flex flex-col gap-10">
+  <div class="bg min-h-screen px-4 py-[40px] flex flex-col gap-10">
     <div
       v-if="!show"
       class="w-1/2 mx-auto flex items-center justify-center gap-4 flex-col"
@@ -42,21 +42,29 @@
                 font-size: 20px;
               "
             >
-              <el-option :value="10" label="10人">10人</el-option>
-              <el-option :value="15" label="15人">15人</el-option>
-              <el-option :value="20" label="20人">20人</el-option>
-              <el-option :value="25" label="25人">25人</el-option>
-              <el-option :value="30" label="30人">30人</el-option>
-              <el-option :value="35" label="35人">35人</el-option>
-              <el-option :value="40" label="40人">40人</el-option>
-              <el-option :value="45" label="45人">45人</el-option>
-              <el-option :value="50" label="50人">50人</el-option>
-              <el-option :value="55" label="55人">55人</el-option>
-              <el-option :value="60" label="60人">60人</el-option>
-              <el-option :value="65" label="65人">65人</el-option>
-              <el-option :value="70" label="70人">70人</el-option>
-              <el-option :value="75" label="75人">75人</el-option>
-              <el-option :value="80" label="80人">80人</el-option>
+              <template v-if="isBiolive">
+                <el-option :value="3" label="3人">3人</el-option>
+                <el-option :value="5" label="5人">5人</el-option>
+                <el-option :value="10" label="10人">10人</el-option>
+                <el-option :value="20" label="20人">20人</el-option>
+              </template>
+              <template v-else>
+                <el-option :value="10" label="10人">10人</el-option>
+                <el-option :value="15" label="15人">15人</el-option>
+                <el-option :value="20" label="20人">20人</el-option>
+                <el-option :value="25" label="25人">25人</el-option>
+                <el-option :value="30" label="30人">30人</el-option>
+                <el-option :value="35" label="35人">35人</el-option>
+                <el-option :value="40" label="40人">40人</el-option>
+                <el-option :value="45" label="45人">45人</el-option>
+                <el-option :value="50" label="50人">50人</el-option>
+                <el-option :value="55" label="55人">55人</el-option>
+                <el-option :value="60" label="60人">60人</el-option>
+                <el-option :value="65" label="65人">65人</el-option>
+                <el-option :value="70" label="70人">70人</el-option>
+                <el-option :value="75" label="75人">75人</el-option>
+                <el-option :value="80" label="80人">80人</el-option>
+              </template>
             </el-select>
           </el-form-item>
           <el-form-item label="兌換時間">
@@ -87,9 +95,11 @@
           <el-form-item label="場次">
             <el-select v-model="importEvent" class="w-[100px]">
               <el-option :value="1" label="1">1</el-option>
-              <el-option :value="2" label="2">2</el-option>
-              <el-option :value="3" label="3">3</el-option>
-              <el-option :value="4" label="4">4</el-option>
+              <template v-if="!isBiolive">
+                <el-option :value="2" label="2">2</el-option>
+                <el-option :value="3" label="3">3</el-option>
+                <el-option :value="4" label="4">4</el-option>
+              </template>
             </el-select>
           </el-form-item>
         </el-form>
@@ -117,7 +127,8 @@
           style="height: 48px"
           :disabled="!csvFile"
           @click="handleImport"
-        >匯入</el-button>
+          >匯入</el-button
+        >
       </div>
 
       <div
@@ -146,9 +157,11 @@
               "
             >
               <el-option :value="1" label="1">1</el-option>
-              <el-option :value="2" label="2">2</el-option>
-              <el-option :value="3" label="3">3</el-option>
-              <el-option :value="4" label="4">4</el-option>
+              <template v-if="!isBiolive">
+                <el-option :value="2" label="2">2</el-option>
+                <el-option :value="3" label="3">3</el-option>
+                <el-option :value="4" label="4">4</el-option>
+              </template>
             </el-select>
           </el-form-item>
         </el-form>
@@ -174,13 +187,20 @@
 
 <script lang="ts" setup>
 import { onMounted, reactive, ref } from "vue";
-import type { FormInstance, FormRules, UploadInstance, UploadFile } from "element-plus";
+import type {
+  FormInstance,
+  FormRules,
+  UploadInstance,
+  UploadFile,
+} from "element-plus";
 import { ElMessage, ElLoading, ElMessageBox } from "element-plus";
 import axios from "axios";
 import { useRoute } from "vue-router";
 import type { Action } from "element-plus";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const MERCHANT_TYPE = import.meta.env.VITE_MERCHANT_TYPE || "propartner";
+const isBiolive = MERCHANT_TYPE === "biolive";
 
 // === 匯入參加者 ===
 const importEvent = ref(1);
@@ -200,14 +220,17 @@ const parseCsv = (text: string) => {
   if (lines.length < 2) return [];
 
   // 跳過標題列
-  return lines.slice(1).map((line) => {
-    const cols = line.split(",");
-    return {
-      name: (cols[0] || "").trim(),
-      mobile: (cols[1] || "").trim(),
-      userId: (cols[2] || "").trim(),
-    };
-  }).filter((m) => m.name && m.userId);
+  return lines
+    .slice(1)
+    .map((line) => {
+      const cols = line.split(",");
+      return {
+        name: (cols[0] || "").trim(),
+        mobile: (cols[1] || "").trim(),
+        userId: (cols[2] || "").trim(),
+      };
+    })
+    .filter((m) => m.name && m.userId);
 };
 
 const handleImport = async () => {
@@ -224,7 +247,9 @@ const handleImport = async () => {
     const members = parseCsv(text);
 
     if (members.length === 0) {
-      ElMessage.error("CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號");
+      ElMessage.error(
+        "CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號",
+      );
       loading.close();
       return;
     }
@@ -247,7 +272,7 @@ const handleImport = async () => {
 const ruleFormRef = ref<FormInstance>();
 
 const ruleForm = reactive({
-  num: 30,
+  num: isBiolive ? 10 : 30,
   time: "16:00",
 });
 const ruleForm2 = reactive({
@@ -292,9 +317,7 @@ const secondAlertFake = () => {
     // autofocus: false,
     confirmButtonText: "確定",
     callback: async (action: Action) => {
-      const res1 = await axios.get(
-        `${API_BASE}/fake?event=${ruleForm2.event}`
-      );
+      const res1 = await axios.get(`${API_BASE}/fake?event=${ruleForm2.event}`);
       ElMessage({
         type: "info",
         message: `成功新增`,
@@ -331,10 +354,7 @@ const submitForm = (formEl: FormInstance | undefined) => {
   formEl.validate(async (valid) => {
     if (valid) {
       try {
-        const { data } = await axios.post(
-          `${API_BASE}/setNum`,
-          ruleForm
-        );
+        const { data } = await axios.post(`${API_BASE}/setNum`, ruleForm);
         await axios.post(`${API_BASE}/setTime`, ruleForm);
         console.log(data);
         ElMessage.success("成功");
@@ -357,9 +377,7 @@ const reset = async () => {
     background: "rgba(0, 0, 0, 0.7)",
   });
   try {
-    await axios.get(
-      `${API_BASE}/reset?event=${ruleForm2.event}`
-    );
+    await axios.get(`${API_BASE}/reset?event=${ruleForm2.event}`);
     ElMessage.success("成功");
     loading.close();
   } catch (e) {

@@ -5,6 +5,8 @@ import axios from "axios";
 import { useRoute } from "vue-router";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
+const MERCHANT_TYPE = import.meta.env.VITE_MERCHANT_TYPE || "propartner";
+const isBiolive = MERCHANT_TYPE === "biolive";
 
 const event = ref(1);
 const raw = ref(false);
@@ -71,8 +73,13 @@ onMounted(() => {
 <template>
   <div class="bg min-h-screen w-screen pt-[5vh] pb-[10vh] px-4">
     <h1 class="font-bold mb-4 text-2xl text-blue-700">
-      {{ eventName }}<br />
-      葡眾珍鑽經理贈車表揚大會<br />得獎名單
+      <template v-if="isBiolive">
+        BIOLIVE 百歐來富<br />抽獎活動<br />得獎名單
+      </template>
+      <template v-else>
+        {{ eventName }}<br />
+        葡眾珍鑽經理贈車表揚大會<br />得獎名單
+      </template>
     </h1>
     <p
       class="text-gray-500 bg-white p-4 border border-gray-300 mb-4 rounded"
