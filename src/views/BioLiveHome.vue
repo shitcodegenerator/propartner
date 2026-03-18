@@ -352,9 +352,9 @@ const login = () => {
       </div>
       <h1
         v-if="step === 0"
-        class="text-white text-6xl font-bold drop-shadow-lg text-center leading-relaxed"
+        class="text-white text-7xl font-bold drop-shadow-lg text-center leading-relaxed"
       >
-        03/22 BIOLIVE 百歐來富<br />抽獎活動
+        幸運摸彩時刻
       </h1>
 
       <!-- <div class="flex items-center justify-center" v-if="step === 2">
