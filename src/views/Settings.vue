@@ -137,6 +137,58 @@
       </div>
 
       <div
+        class="bg-white shadow rounded-lg border w-[600px] mx-auto flex flex-col items-center justify-center py-8 px-4"
+      >
+        <h1 class="font-bold text-2xl text-center mb-4 text-purple-700">
+          查詢得獎者
+        </h1>
+        <div class="flex items-center gap-4 mb-4 w-full">
+          <el-form label-width="60px" label-position="left" class="flex-shrink-0">
+            <el-form-item label="場次" class="!mb-0">
+              <el-select v-model="queryEvent" class="w-[100px]">
+                <el-option :value="1" label="1">1</el-option>
+                <template v-if="!isBiolive">
+                  <el-option :value="2" label="2">2</el-option>
+                  <el-option :value="3" label="3">3</el-option>
+                  <el-option :value="4" label="4">4</el-option>
+                </template>
+              </el-select>
+            </el-form-item>
+          </el-form>
+          <el-button type="primary" @click="queryWinners" :loading="queryLoading">
+            查詢
+          </el-button>
+        </div>
+        <div v-if="winnersList.length > 0" class="w-full">
+          <p class="text-sm text-gray-500 mb-2">共 {{ winnersList.length }} 位得獎者</p>
+          <el-table :data="winnersList" border size="small" max-height="400">
+            <el-table-column type="index" label="#" width="50" />
+            <el-table-column
+              v-if="isBiolive"
+              prop="name"
+              label="代號"
+            />
+            <el-table-column
+              v-if="!isBiolive"
+              prop="name"
+              label="姓名"
+            />
+            <el-table-column
+              v-if="!isBiolive"
+              prop="userId"
+              label="身分證字號"
+            />
+            <el-table-column
+              v-if="!isBiolive"
+              prop="mobile"
+              label="手機號碼"
+            />
+          </el-table>
+        </div>
+        <el-empty v-else-if="querySearched" description="此場次尚無得獎者" class="w-full" />
+      </div>
+
+      <div
         class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
       >
         <h1 class="font-bold text-2xl text-center mb-4 text-red-700">
@@ -284,6 +336,23 @@ const handleImport = async () => {
   } finally {
     loading.close();
   }
+};
+
+// === 查詢得獎者 ===
+const queryEvent = ref(1);
+const winnersList = ref<any[]>([]);
+const queryLoading = ref(false);
+const querySearched = ref(false);
+
+const queryWinners = async () => {
+  queryLoading.value = true;
+  querySearched.value = false;
+  const { data } = await axios.get(
+    `${API_BASE}/getWinners?event=${queryEvent.value}`
+  );
+  winnersList.value = data.winners ?? [];
+  querySearched.value = true;
+  queryLoading.value = false;
 };
 
 const ruleFormRef = ref<FormInstance>();
