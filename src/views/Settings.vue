@@ -1,104 +1,89 @@
 <template>
-  <div class="bg min-h-screen px-4 py-[40px] flex flex-col gap-10">
+  <div class="min-h-screen bg-gray-100 px-4 py-10">
+    <!-- 登入 -->
     <div
       v-if="!show"
-      class="w-1/2 mx-auto flex items-center justify-center gap-4 flex-col"
+      class="max-w-xs mx-auto flex flex-col items-center gap-4 pt-20"
     >
+      <h2 class="text-xl font-bold text-gray-600 tracking-wide">管理後台</h2>
       <el-input
         v-model="password"
-        class="w-1/2 h-10"
+        class="w-full"
+        size="large"
         @keyup.enter="login"
         placeholder="請輸入密碼"
         type="password"
       />
-      <el-button class="w-full bg-yellow-500" @click="login"
-        >進入設定頁面</el-button
-      >
+      <el-button type="primary" class="w-full" size="large" @click="login">
+        進入設定頁面
+      </el-button>
     </div>
 
-    <template v-else>
-      <div
-        class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
-      >
-        <h1 class="font-bold text-2xl text-center mb-4 text-blue-700">
-          抽獎人數設置
-        </h1>
+    <!-- 主內容 -->
+    <div v-else class="max-w-3xl mx-auto flex flex-col gap-6">
+      <!-- 抽獎設定 -->
+      <el-card shadow="hover">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-blue-700">抽獎設定</span>
+          </div>
+        </template>
         <el-form
           ref="ruleFormRef"
           :model="ruleForm"
           status-icon
           :rules="rules"
-          label-width="120px"
+          label-width="100px"
           label-position="left"
-          class="demo-ruleForm"
         >
           <el-form-item label="抽獎人數" prop="num">
-            <el-select
-              v-model="ruleForm.num"
-              style="
-                width: 100px;
-                border-radius: 400px;
-                overflow: hidden;
-                font-size: 20px;
-              "
-            >
+            <el-select v-model="ruleForm.num" class="w-[120px]">
               <template v-if="isBiolive">
-                <el-option :value="3" label="3人">3人</el-option>
-                <el-option :value="5" label="5人">5人</el-option>
-                <el-option :value="10" label="10人">10人</el-option>
-                <el-option :value="20" label="20人">20人</el-option>
+                <el-option :value="3" label="3人" />
+                <el-option :value="5" label="5人" />
+                <el-option :value="10" label="10人" />
+                <el-option :value="20" label="20人" />
               </template>
               <template v-else>
-                <el-option :value="10" label="10人">10人</el-option>
-                <el-option :value="15" label="15人">15人</el-option>
-                <el-option :value="20" label="20人">20人</el-option>
-                <el-option :value="25" label="25人">25人</el-option>
-                <el-option :value="30" label="30人">30人</el-option>
-                <el-option :value="35" label="35人">35人</el-option>
-                <el-option :value="40" label="40人">40人</el-option>
-                <el-option :value="45" label="45人">45人</el-option>
-                <el-option :value="50" label="50人">50人</el-option>
-                <el-option :value="55" label="55人">55人</el-option>
-                <el-option :value="60" label="60人">60人</el-option>
-                <el-option :value="65" label="65人">65人</el-option>
-                <el-option :value="70" label="70人">70人</el-option>
-                <el-option :value="75" label="75人">75人</el-option>
-                <el-option :value="80" label="80人">80人</el-option>
+                <el-option
+                  v-for="n in [
+                    10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
+                  ]"
+                  :key="n"
+                  :value="n"
+                  :label="`${n}人`"
+                />
               </template>
             </el-select>
           </el-form-item>
           <el-form-item label="兌換時間">
-            <el-input v-model="ruleForm.time" />
+            <el-input v-model="ruleForm.time" class="w-[120px]" />
           </el-form-item>
         </el-form>
+        <el-button
+          type="primary"
+          class="w-full"
+          @click="submitForm(ruleFormRef)"
+        >
+          儲存設定
+        </el-button>
+      </el-card>
 
-        <div class="flex flex-col gap-4 w-full">
-          <el-button
-            type="primary"
-            style="margin: 0; height: 48px"
-            @click="submitForm(ruleFormRef)"
-            >送出</el-button
-          >
-          <el-button type="danger" style="margin: 0; height: 48px" @click="open"
-            >清除所有名單</el-button
-          >
-        </div>
-      </div>
-
-      <div
-        class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
-      >
-        <h1 class="font-bold text-2xl text-center mb-4 text-green-700">
-          匯入參加者
-        </h1>
-        <el-form label-width="120px" label-position="left" class="w-full">
-          <el-form-item label="場次">
-            <el-select v-model="importEvent" class="w-[100px]">
-              <el-option :value="1" label="1">1</el-option>
+      <!-- 匯入參加者 -->
+      <el-card shadow="hover">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-green-700">匯入參加者</span>
+          </div>
+        </template>
+        <el-form label-width="100px" label-position="left" class="mb-4">
+          <el-form-item label="場次" class="!mb-0">
+            <el-select v-model="importEvent" class="w-[120px]">
+              <el-option :value="1" label="1" />
               <template v-if="!isBiolive">
-                <el-option :value="2" label="2">2</el-option>
-                <el-option :value="3" label="3">3</el-option>
-                <el-option :value="4" label="4">4</el-option>
+                <el-option :value="2" label="2" />
+                <el-option :value="3" label="3" />
+                <el-option :value="4" label="4" />
               </template>
             </el-select>
           </el-form-item>
@@ -129,116 +114,186 @@
         <el-button
           type="success"
           class="w-full"
-          style="height: 48px"
           :disabled="!csvFile"
           @click="handleImport"
-          >匯入</el-button
         >
-      </div>
+          匯入
+        </el-button>
+      </el-card>
 
-      <div
-        class="bg-white shadow rounded-lg border w-[600px] mx-auto flex flex-col items-center justify-center py-8 px-4"
-      >
-        <h1 class="font-bold text-2xl text-center mb-4 text-purple-700">
-          查詢得獎者
-        </h1>
-        <div class="flex items-center gap-4 mb-4 w-full">
-          <el-form label-width="60px" label-position="left" class="flex-shrink-0">
-            <el-form-item label="場次" class="!mb-0">
-              <el-select v-model="queryEvent" class="w-[100px]">
-                <el-option :value="1" label="1">1</el-option>
-                <template v-if="!isBiolive">
-                  <el-option :value="2" label="2">2</el-option>
-                  <el-option :value="3" label="3">3</el-option>
-                  <el-option :value="4" label="4">4</el-option>
-                </template>
-              </el-select>
-            </el-form-item>
-          </el-form>
-          <el-button type="primary" @click="queryWinners" :loading="queryLoading">
-            查詢
-          </el-button>
-        </div>
-        <div v-if="winnersList.length > 0" class="w-full">
-          <p class="text-sm text-gray-500 mb-2">共 {{ winnersList.length }} 位得獎者</p>
-          <el-table :data="winnersList" border size="small" max-height="400">
-            <el-table-column type="index" label="#" width="50" />
-            <el-table-column
-              v-if="isBiolive"
-              prop="name"
-              label="代號"
+      <!-- 資料查詢 -->
+      <el-card shadow="hover">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-purple-700">資料查詢</span>
+          </div>
+        </template>
+        <el-tabs v-model="activeQueryTab">
+          <!-- 查詢得獎者 -->
+          <el-tab-pane label="得獎者" name="winners">
+            <div class="flex items-center gap-4 mb-4">
+              <el-form
+                label-width="50px"
+                label-position="left"
+                class="flex-shrink-0"
+              >
+                <el-form-item label="場次" class="!mb-0">
+                  <el-select v-model="queryWinnersEvent" class="w-40">
+                    <el-option :value="1" label="1" />
+                    <template v-if="!isBiolive">
+                      <el-option :value="2" label="2" />
+                      <el-option :value="3" label="3" />
+                      <el-option :value="4" label="4" />
+                    </template>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <el-button
+                type="primary"
+                @click="queryWinners"
+                :loading="winnersLoading"
+              >
+                查詢
+              </el-button>
+            </div>
+            <div v-if="winnersList.length > 0" class="w-full">
+              <p class="text-sm text-gray-500 mb-2">
+                共 {{ winnersList.length }} 位得獎者
+              </p>
+              <el-table
+                :data="winnersList"
+                border
+                size="small"
+                max-height="400"
+              >
+                <el-table-column type="index" label="#" width="50" />
+                <el-table-column v-if="isBiolive" prop="name" label="代號" />
+                <el-table-column v-if="!isBiolive" prop="name" label="姓名" />
+                <el-table-column
+                  v-if="!isBiolive"
+                  prop="userId"
+                  label="身分證字號"
+                />
+                <el-table-column
+                  v-if="!isBiolive"
+                  prop="mobile"
+                  label="手機號碼"
+                />
+              </el-table>
+            </div>
+            <el-empty
+              v-else-if="winnersSearched"
+              description="此場次尚無得獎者"
             />
-            <el-table-column
-              v-if="!isBiolive"
-              prop="name"
-              label="姓名"
-            />
-            <el-table-column
-              v-if="!isBiolive"
-              prop="userId"
-              label="身分證字號"
-            />
-            <el-table-column
-              v-if="!isBiolive"
-              prop="mobile"
-              label="手機號碼"
-            />
-          </el-table>
-        </div>
-        <el-empty v-else-if="querySearched" description="此場次尚無得獎者" class="w-full" />
-      </div>
+          </el-tab-pane>
 
-      <div
-        class="bg-white shadow rounded-lg border w-[300px] mx-auto flex flex-col items-center justify-center py-8 px-4"
-      >
-        <h1 class="font-bold text-2xl text-center mb-4 text-red-700">
-          重置得獎名單
-        </h1>
-        <el-form
-          ref="ruleFormRef"
-          :model="ruleForm"
-          status-icon
-          :rules="rules"
-          label-width="120px"
-          label-position="left"
-          class="demo-ruleForm"
-        >
-          <el-form-item label="場次" prop="event">
-            <el-select
-              v-model="ruleForm2.event"
-              style="
-                width: 100px;
-                border-radius: 400px;
-                overflow: hidden;
-                font-size: 20px;
-              "
-            >
-              <el-option :value="1" label="1">1</el-option>
+          <!-- 查詢參賽者 -->
+          <el-tab-pane label="參賽者" name="members">
+            <div class="flex items-center gap-4 mb-4">
+              <el-form
+                label-width="50px"
+                label-position="left"
+                class="flex-shrink-0"
+              >
+                <el-form-item label="場次" class="!mb-0">
+                  <el-select v-model="queryMembersEvent" class="!w-40">
+                    <el-option :value="1" label="1" />
+                    <template v-if="!isBiolive">
+                      <el-option :value="2" label="2" />
+                      <el-option :value="3" label="3" />
+                      <el-option :value="4" label="4" />
+                    </template>
+                  </el-select>
+                </el-form-item>
+              </el-form>
+              <el-button
+                type="primary"
+                @click="queryMembers"
+                :loading="membersLoading"
+              >
+                查詢
+              </el-button>
+            </div>
+            <div v-if="membersList.length > 0" class="w-full">
+              <p class="text-sm text-gray-500 mb-2">
+                共 {{ membersList.length }} 位參賽者
+              </p>
+              <el-table
+                :data="membersList"
+                border
+                size="small"
+                max-height="400"
+              >
+                <el-table-column type="index" label="#" width="50" />
+                <el-table-column v-if="isBiolive" prop="name" label="代號" />
+                <el-table-column v-if="!isBiolive" prop="name" label="姓名" />
+                <el-table-column
+                  v-if="!isBiolive"
+                  prop="userId"
+                  label="身分證字號"
+                />
+                <el-table-column
+                  v-if="!isBiolive"
+                  prop="mobile"
+                  label="手機號碼"
+                />
+                <el-table-column
+                  prop="isWinner"
+                  label="已中獎"
+                  width="80"
+                  align="center"
+                >
+                  <template #default="{ row }">
+                    <el-tag
+                      :type="row.isWinner ? 'success' : 'info'"
+                      size="small"
+                    >
+                      {{ row.isWinner ? "是" : "否" }}
+                    </el-tag>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </div>
+            <el-empty
+              v-else-if="membersSearched"
+              description="此場次尚無參賽者"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </el-card>
+
+      <!-- 危險操作 -->
+      <el-card shadow="hover" class="danger-zone">
+        <template #header>
+          <div class="flex items-center gap-2">
+            <span class="text-lg font-bold text-red-600">危險操作</span>
+          </div>
+        </template>
+        <el-form label-width="100px" label-position="left" class="mb-4">
+          <el-form-item label="場次" class="!mb-0">
+            <el-select v-model="ruleForm2.event" class="w-[120px]">
+              <el-option :value="1" label="1" />
               <template v-if="!isBiolive">
-                <el-option :value="2" label="2">2</el-option>
-                <el-option :value="3" label="3">3</el-option>
-                <el-option :value="4" label="4">4</el-option>
+                <el-option :value="2" label="2" />
+                <el-option :value="3" label="3" />
+                <el-option :value="4" label="4" />
               </template>
             </el-select>
           </el-form-item>
         </el-form>
-
-        <div class="flex flex-col gap-4 w-full">
-          <el-button
-            type="warning"
-            style="margin: 0; height: 48px"
-            @click="reset"
-            >重置得獎者</el-button
-          >
-          <el-button
-            type="success"
-            style="margin: 0; height: 48px"
-            @click="openFake"
-            >新增假名單資料</el-button
-          >
+        <div class="flex flex-row gap-3">
+          <el-button type="warning" class="w-full" @click="reset">
+            重置此場次得獎者
+          </el-button>
+          <el-button type="info" class="w-full" @click="openFake">
+            新增假名單資料
+          </el-button>
+          <el-button type="danger" class="w-full" @click="open">
+            清除所有名單
+          </el-button>
         </div>
-      </div>
-    </template>
+      </el-card>
+    </div>
   </div>
 </template>
 
@@ -252,12 +307,56 @@ import type {
 } from "element-plus";
 import { ElMessage, ElLoading, ElMessageBox } from "element-plus";
 import axios from "axios";
-import { useRoute } from "vue-router";
-import type { Action } from "element-plus";
 
 const API_BASE = import.meta.env.VITE_API_BASE;
 const MERCHANT_TYPE = import.meta.env.VITE_MERCHANT_TYPE || "propartner";
 const isBiolive = MERCHANT_TYPE === "biolive";
+
+// === 登入 ===
+const show = ref(false);
+const password = ref("");
+
+const login = () => {
+  if (password.value.toLowerCase() === "caq6866") {
+    show.value = true;
+  } else {
+    ElMessage.error("密碼錯誤");
+  }
+};
+
+// === 抽獎設定 ===
+const ruleFormRef = ref<FormInstance>();
+const ruleForm = reactive({
+  num: isBiolive ? 10 : 30,
+  time: "16:00",
+});
+const rules = reactive<FormRules<typeof ruleForm>>({
+  num: [{ required: true, message: "請選擇人數", trigger: "change" }],
+});
+
+const submitForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  const loading = ElLoading.service({
+    lock: true,
+    customClass: "spinner",
+    background: "rgba(0, 0, 0, 0.7)",
+  });
+  formEl.validate(async (valid) => {
+    if (valid) {
+      try {
+        await axios.post(`${API_BASE}/setNum`, ruleForm);
+        await axios.post(`${API_BASE}/setTime`, ruleForm);
+        ElMessage.success("成功");
+      } catch (err: any) {
+        ElMessage.error(err?.response?.data?.message ?? "失敗");
+      } finally {
+        loading.close();
+      }
+    } else {
+      loading.close();
+    }
+  });
+};
 
 // === 匯入參加者 ===
 const importEvent = ref(1);
@@ -275,7 +374,6 @@ const handleFileRemove = () => {
 const parseCsv = (text: string) => {
   const lines = text.split(/\r?\n/).filter((line) => line.trim());
 
-  // biolive：所有非空 cell 都是一筆代號
   if (isBiolive) {
     if (lines.length === 0) return [];
     return lines
@@ -285,7 +383,6 @@ const parseCsv = (text: string) => {
       .map((code) => ({ code }));
   }
 
-  // propartner：跳過標題列
   if (lines.length < 2) return [];
   return lines
     .slice(1)
@@ -319,7 +416,6 @@ const handleImport = async () => {
           ? "CSV 檔案中沒有有效資料，請確認格式：代號"
           : "CSV 檔案中沒有有效資料，請確認格式：姓名,手機號碼,身分證字號",
       );
-      loading.close();
       return;
     }
 
@@ -338,123 +434,45 @@ const handleImport = async () => {
   }
 };
 
-// === 查詢得獎者 ===
-const queryEvent = ref(1);
+// === 資料查詢 ===
+const activeQueryTab = ref("winners");
+
+// 查詢得獎者
+const queryWinnersEvent = ref(1);
 const winnersList = ref<any[]>([]);
-const queryLoading = ref(false);
-const querySearched = ref(false);
+const winnersLoading = ref(false);
+const winnersSearched = ref(false);
 
 const queryWinners = async () => {
-  queryLoading.value = true;
-  querySearched.value = false;
+  winnersLoading.value = true;
+  winnersSearched.value = false;
   const { data } = await axios.get(
-    `${API_BASE}/getWinners?event=${queryEvent.value}`
+    `${API_BASE}/getWinners?event=${queryWinnersEvent.value}`,
   );
   winnersList.value = data.winners ?? [];
-  querySearched.value = true;
-  queryLoading.value = false;
+  winnersSearched.value = true;
+  winnersLoading.value = false;
 };
 
-const ruleFormRef = ref<FormInstance>();
+// 查詢參賽者
+const queryMembersEvent = ref(1);
+const membersList = ref<any[]>([]);
+const membersLoading = ref(false);
+const membersSearched = ref(false);
 
-const ruleForm = reactive({
-  num: isBiolive ? 10 : 30,
-  time: "16:00",
-});
-const ruleForm2 = reactive({
-  event: 1,
-});
-
-const rules = reactive<FormRules<typeof ruleForm>>({
-  num: [{ required: true, message: "請選擇人數", trigger: "change" }],
-});
-
-const show = ref(false);
-const password = ref("");
-
-const login = () => {
-  if (password.value.toLowerCase() === "caq6866") {
-    show.value = true;
-  } else {
-    ElMessage.error("密碼錯誤");
-  }
+const queryMembers = async () => {
+  membersLoading.value = true;
+  membersSearched.value = false;
+  const { data } = await axios.get(
+    `${API_BASE}/getMembers?event=${queryMembersEvent.value}`,
+  );
+  membersList.value = data.members ?? [];
+  membersSearched.value = true;
+  membersLoading.value = false;
 };
 
-const secondAlert = () => {
-  ElMessageBox.alert("按下確定會立即清除所有參加人員，請務必確認", "提示", {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: "確定",
-    callback: async (action: Action) => {
-      const res1 = await axios.get(`${API_BASE}/clear`);
-      ElMessage({
-        type: "info",
-        message: `已清除`,
-      });
-    },
-  });
-};
-
-const activeEvent = ref(1);
-
-const secondAlertFake = () => {
-  ElMessageBox.alert("按下確定會立即新增假名單人員，請務必確認", "提示", {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: "確定",
-    callback: async (action: Action) => {
-      const res1 = await axios.get(`${API_BASE}/fake?event=${ruleForm2.event}&type=${MERCHANT_TYPE}`);
-      ElMessage({
-        type: "info",
-        message: `成功新增`,
-      });
-    },
-  });
-};
-
-const open = () => {
-  ElMessageBox.alert("是否要清除所有參加人員？", "提示", {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: "確定",
-    callback: secondAlert,
-  });
-};
-
-const openFake = () => {
-  ElMessageBox.alert("是否要新增假名單資料？", "提示", {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: "確定",
-    callback: secondAlertFake,
-  });
-};
-
-const submitForm = (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  const loading = ElLoading.service({
-    lock: true,
-    customClass: "spinner",
-    background: "rgba(0, 0, 0, 0.7)",
-  });
-  formEl.validate(async (valid) => {
-    if (valid) {
-      try {
-        const { data } = await axios.post(`${API_BASE}/setNum`, ruleForm);
-        await axios.post(`${API_BASE}/setTime`, ruleForm);
-        console.log(data);
-        ElMessage.success("成功");
-        loading.close();
-      } catch (err) {
-        console.log(err);
-        ElMessage.error(err?.response?.data?.message ?? "失敗");
-        loading.close();
-      }
-    }
-  });
-};
-
-const route = useRoute();
+// === 危險操作 ===
+const ruleForm2 = reactive({ event: 1 });
 
 const reset = async () => {
   const loading = ElLoading.service({
@@ -465,23 +483,80 @@ const reset = async () => {
   try {
     await axios.get(`${API_BASE}/reset?event=${ruleForm2.event}`);
     ElMessage.success("成功");
-    loading.close();
-  } catch (e) {
+  } catch {
     ElMessage.error("失敗");
+  } finally {
     loading.close();
   }
 };
 
+const open = () => {
+  ElMessageBox.confirm("是否要清除所有參加人員？", "提示", {
+    confirmButtonText: "確定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      ElMessageBox.confirm(
+        "按下確定會立即清除所有參加人員，請務必確認",
+        "最後確認",
+        {
+          confirmButtonText: "確定清除",
+          cancelButtonText: "取消",
+          type: "error",
+        },
+      )
+        .then(async () => {
+          await axios.get(`${API_BASE}/clear`);
+          ElMessage.success("已清除");
+        })
+        .catch(() => {});
+    })
+    .catch(() => {});
+};
+
+const openFake = () => {
+  ElMessageBox.confirm("是否要新增假名單資料？", "提示", {
+    confirmButtonText: "確定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      ElMessageBox.confirm(
+        "按下確定會立即新增假名單人員，請務必確認",
+        "最後確認",
+        {
+          confirmButtonText: "確定新增",
+          cancelButtonText: "取消",
+          type: "warning",
+        },
+      )
+        .then(async () => {
+          await axios.get(
+            `${API_BASE}/fake?event=${ruleForm2.event}&type=${MERCHANT_TYPE}`,
+          );
+          ElMessage.success("成功新增");
+        })
+        .catch(() => {});
+    })
+    .catch(() => {});
+};
+
+// === 初始化 ===
 onMounted(async () => {
-  const res1 = await axios.get(`${API_BASE}/getNum`);
-  ruleForm.num = res1.data.num;
-  const res2 = await axios.get(`${API_BASE}/getTime`);
-  ruleForm.time = res2.data.time;
+  const [numRes, timeRes] = await Promise.all([
+    axios.get(`${API_BASE}/getNum`),
+    axios.get(`${API_BASE}/getTime`),
+  ]);
+  ruleForm.num = numRes.data.num;
+  ruleForm.time = timeRes.data.time;
 });
 </script>
 
 <style lang="scss" scoped>
-.bg {
-  background-color: #dbdbdb;
+.danger-zone {
+  :deep(.el-card__header) {
+    @apply border-red-200 bg-red-50;
+  }
 }
 </style>
