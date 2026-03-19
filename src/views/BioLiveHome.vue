@@ -2,6 +2,7 @@
 import { ref, onMounted, computed, onBeforeUnmount } from "vue";
 import prologo from "../assets/prologo.svg";
 import title from "../assets/title.png";
+import luckytitle from "../assets/luckytitle.png";
 import { ElMessage, ElLoading } from "element-plus";
 import axios from "axios";
 import { useRoute } from "vue-router";
@@ -354,7 +355,10 @@ const login = () => {
         v-if="step === 0"
         class="text-white text-7xl font-bold drop-shadow-lg text-center leading-relaxed"
       >
-        幸運摸彩時刻
+        <img
+          :src="luckytitle"
+          :style="{ filter: 'contrast(0.5) brightness(1.3)' }"
+        />
       </h1>
 
       <!-- <div class="flex items-center justify-center" v-if="step === 2">

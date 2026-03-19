@@ -43,6 +43,7 @@
                 <el-option :value="5" label="5人" />
                 <el-option :value="10" label="10人" />
                 <el-option :value="20" label="20人" />
+                <el-option :value="50" label="50人" />
               </template>
               <template v-else>
                 <el-option
