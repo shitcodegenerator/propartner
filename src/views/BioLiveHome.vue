@@ -378,5 +378,6 @@ const login = () => {
   background-image: url("../assets/biolivebg.jpg");
   background-size: cover;
   background-position: center;
+  overflow: scroll;
 }
 </style>
